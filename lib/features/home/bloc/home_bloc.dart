@@ -12,6 +12,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(ProductLoading()) {
     on<LoadProducts>(_onLoadProducts);
     on<SearchProducts>(_onSearchProducts);
+    on<SortProducts>(_onSortProducts);
   }
 
   Future<void> _onLoadProducts(
@@ -46,5 +47,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           );
         }).toList();
     emit(ProductLoaded(filtered));
+  }
+
+  void _onSortProducts(SortProducts event, Emitter<HomeState> emit) {
+    if (state is ProductLoaded) {
+      List<Products> sortedList = List.from((state as ProductLoaded).products);
+
+      if (event.sortType == 'lowToHigh') {
+        sortedList.sort(
+          (first, second) => first.price!.compareTo(second.price!),
+        );
+      } else if (event.sortType == 'highToLow') {
+        sortedList.sort(
+          (first, second) => second.price!.compareTo(first.price!),
+        );
+      } else if (event.sortType == 'rating') {
+        sortedList.sort(
+          (first, second) => second.rating!.compareTo(first.rating!),
+        );
+      }
+
+      emit(ProductLoaded(sortedList));
+    }
   }
 }

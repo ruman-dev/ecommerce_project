@@ -231,6 +231,7 @@ class _HomeViewState extends State<HomeView> {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: AppColors.primaryTextColor,
+                  onTextTap: () => _bloc.add(const SortProducts('highToLow')),
                 ),
                 SizedBox(height: 20.h),
                 CustomText(
@@ -238,6 +239,7 @@ class _HomeViewState extends State<HomeView> {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: AppColors.primaryTextColor,
+                  onTextTap: () => _bloc.add(const SortProducts('lowToHigh')),
                 ),
                 SizedBox(height: 20.h),
                 CustomText(
@@ -245,6 +247,7 @@ class _HomeViewState extends State<HomeView> {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: AppColors.primaryTextColor,
+                  onTextTap: () => _bloc.add(const SortProducts('rating')),
                 ),
                 SizedBox(height: 20.h),
               ],
