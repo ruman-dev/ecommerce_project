@@ -121,7 +121,7 @@ class _HomeViewState extends State<HomeView> {
                                 fontWeight: FontWeight.w400,
                                 color: AppColors.primaryTextColor,
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
+                                maxLines: 1,
                               ),
                               Row(
                                 children: [
