@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_projects/core/constants/app_colors.dart';
 import 'package:flutter_projects/core/constants/asset_path.dart';
 import 'package:flutter_projects/core/global/custom_text.dart';
 import 'package:flutter_projects/core/global/custom_textfield.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_projects/features/home/bloc/home_bloc.dart';
+import 'package:flutter_projects/features/home/bloc/home_event.dart';
+import 'package:flutter_projects/features/home/bloc/home_state.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-class HomeView extends ConsumerStatefulWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   @override
-  ConsumerState createState() => _HomeViewState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends ConsumerState<HomeView> {
+class _HomeViewState extends State<HomeView> {
+  late HomeBloc _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = context.read<HomeBloc>();
+    _bloc.add(const LoadProducts());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,103 +62,127 @@ class _HomeViewState extends ConsumerState<HomeView> {
               ),
               SizedBox(height: 20.h),
               Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.5,
-                  ),
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
-                              width: double.maxFinite,
-                              height: 200.h,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                image: DecorationImage(
-                                  image: AssetImage(AssetPath.man1),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                child: BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    if (state is ProductLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is ProductLoaded) {
+                      final products = state.products;
+                      return GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 0.5,
                             ),
-                            Positioned(
-                              right: 10,
-                              top: 10,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 15.r,
-                                child: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.favorite_border_rounded,
-                                    size: 15,
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                    width: double.maxFinite,
+                                    height: 200.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          products[index].images?[0] ?? '',
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Positioned(
+                                    right: 10,
+                                    top: 10,
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      radius: 15.r,
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.favorite_border_rounded,
+                                          size: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
-                        CustomText(
-                          text: 'Allen Solly Regular fit cotton shirt',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.primaryTextColor,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                        Row(
-                          children: [
-                            CustomText(
-                              text: '\$35',
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primaryTextColor,
-                            ),
-                            SizedBox(width: 5),
-                            CustomText(
-                              text: '\$40.25',
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.greyColor,
-                              textDecoration: TextDecoration.lineThrough,
-                              decorationColor: AppColors.greyColor,
-                            ),
-                            SizedBox(width: 10),
-                            CustomText(
-                              text: '15% off',
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.orangeColor,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          children: [
-                            SvgPicture.asset(AssetPath.ratingIcon),
-                            SizedBox(width: 10),
-                            CustomText(
-                              text: '4.3',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.primaryTextColor,
-                            ),
-                            SizedBox(width: 5),
-                            CustomText(
-                              text: '(41)',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.greyColor,
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
+                              SizedBox(height: 10.h),
+                              CustomText(
+                                text: products[index].title ?? 'No Title',
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.primaryTextColor,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                              Row(
+                                children: [
+                                  CustomText(
+                                    text: '\$${products[index].price}',
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primaryTextColor,
+                                  ),
+                                  SizedBox(width: 5),
+                                  CustomText(
+                                    text: '\$${products[index].price}',
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.greyColor,
+                                    textDecoration: TextDecoration.lineThrough,
+                                    decorationColor: AppColors.greyColor,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: CustomText(
+                                      text:
+                                          '${products[index].discountPercentage}% off',
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.orangeColor,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10.h),
+                              Row(
+                                children: [
+                                  SvgPicture.asset(AssetPath.ratingIcon),
+                                  SizedBox(width: 10),
+                                  CustomText(
+                                    text: '${products[index].rating}',
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.primaryTextColor,
+                                  ),
+                                  SizedBox(width: 5),
+                                  CustomText(
+                                    text:
+                                        '(${products[index].reviews!.length})',
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.greyColor,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else if (state is ProductError) {
+                      return Center(child: Text(state.message));
+                    } else {
+                      return const SizedBox();
+                    }
                   },
                 ),
               ),
