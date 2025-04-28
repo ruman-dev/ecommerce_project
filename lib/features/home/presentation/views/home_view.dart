@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_projects/core/constants/app_colors.dart';
@@ -122,7 +121,7 @@ class _HomeViewState extends State<HomeView> {
                                 fontWeight: FontWeight.w400,
                                 color: AppColors.primaryTextColor,
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
+                                maxLines: 2,
                               ),
                               Row(
                                 children: [
@@ -200,6 +199,7 @@ class _HomeViewState extends State<HomeView> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
+
       builder: (context) {
         return SizedBox(
           height: 230.h,
@@ -231,7 +231,10 @@ class _HomeViewState extends State<HomeView> {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: AppColors.primaryTextColor,
-                  onTextTap: () => _bloc.add(const SortProducts('highToLow')),
+                  onTextTap: () {
+                    _bloc.add(const SortProducts('highToLow'));
+                    Navigator.pop(context);
+                  },
                 ),
                 SizedBox(height: 20.h),
                 CustomText(
@@ -239,7 +242,10 @@ class _HomeViewState extends State<HomeView> {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: AppColors.primaryTextColor,
-                  onTextTap: () => _bloc.add(const SortProducts('lowToHigh')),
+                  onTextTap: () {
+                    _bloc.add(const SortProducts('lowToHigh'));
+                    Navigator.pop(context);
+                  },
                 ),
                 SizedBox(height: 20.h),
                 CustomText(
@@ -247,7 +253,10 @@ class _HomeViewState extends State<HomeView> {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: AppColors.primaryTextColor,
-                  onTextTap: () => _bloc.add(const SortProducts('rating')),
+                  onTextTap: () {
+                    _bloc.add(const SortProducts('rating'));
+                    Navigator.pop(context);
+                  },
                 ),
                 SizedBox(height: 20.h),
               ],

@@ -5,10 +5,12 @@ abstract class HomeEvent extends Equatable {
 }
 
 class LoadProducts extends HomeEvent {
-  const LoadProducts();
+  final int pageKey;
+
+  const LoadProducts({this.pageKey = 0});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [pageKey];
 }
 
 class SearchProducts extends HomeEvent {
