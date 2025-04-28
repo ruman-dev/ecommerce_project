@@ -14,6 +14,7 @@ class CustomText extends StatelessWidget {
     this.maxLines,
     this.textDecoration,
     this.decorationColor,
+    this.onTextTap,
   });
 
   final String text;
@@ -25,20 +26,24 @@ class CustomText extends StatelessWidget {
   final int? maxLines;
   final TextDecoration? textDecoration;
   final Color? decorationColor;
+  final VoidCallback? onTextTap;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      textAlign: textAlign ?? TextAlign.start,
-      overflow: overflow,
-      maxLines: maxLines,
-      style: GoogleFonts.poppins(
-        fontSize: fontSize,
-        fontWeight: fontWeight ?? FontWeight.w600,
-        color: color ?? AppColors.greyColor,
-        decoration: textDecoration ?? TextDecoration.none,
-        decorationColor: decorationColor ?? AppColors.primaryTextColor,
+    return GestureDetector(
+      onTap: onTextTap,
+      child: Text(
+        text,
+        textAlign: textAlign ?? TextAlign.start,
+        overflow: overflow,
+        maxLines: maxLines,
+        style: GoogleFonts.inter(
+          fontSize: fontSize,
+          fontWeight: fontWeight ?? FontWeight.w600,
+          color: color ?? AppColors.greyColor,
+          decoration: textDecoration ?? TextDecoration.none,
+          decorationColor: decorationColor ?? AppColors.primaryTextColor,
+        ),
       ),
     );
   }
