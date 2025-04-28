@@ -1,1 +1,1 @@
-
+class HomeController extends {}
