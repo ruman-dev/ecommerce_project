@@ -42,6 +42,7 @@ class _HomeViewState extends State<HomeView> {
                     child: CustomTextfield(
                       borderRadius: 12,
                       hintText: 'Search Anything...',
+                      onChanged: (value) => _bloc.add(SearchProducts(value)),
                       prefixIcon: Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Icon(

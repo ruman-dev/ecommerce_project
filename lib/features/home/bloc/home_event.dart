@@ -10,3 +10,21 @@ class LoadProducts extends HomeEvent {
   @override
   List<Object?> get props => [];
 }
+
+class SearchProducts extends HomeEvent {
+  final String query;
+
+  const SearchProducts(this.query);
+
+  @override
+  List<Object?> get props => [query];
+}
+
+class SortProducts extends HomeEvent {
+  final String sortType;
+
+  const SortProducts(this.sortType);
+
+  @override
+  List<Object?> get props => [sortType];
+}

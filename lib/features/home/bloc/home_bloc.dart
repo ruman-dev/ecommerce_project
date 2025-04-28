@@ -11,6 +11,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeBloc() : super(ProductLoading()) {
     on<LoadProducts>(_onLoadProducts);
+    on<SearchProducts>(_onSearchProducts);
   }
 
   Future<void> _onLoadProducts(
@@ -35,5 +36,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } catch (e) {
       emit(ProductError(e.toString()));
     }
+  }
+
+  void _onSearchProducts(SearchProducts event, Emitter<HomeState> emit) {
+    final filtered =
+        _originalProducts.where((product) {
+          return product.title!.toLowerCase().contains(
+            event.query.toLowerCase(),
+          );
+        }).toList();
+    emit(ProductLoaded(filtered));
   }
 }
